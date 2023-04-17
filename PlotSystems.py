@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import plotly.graph_objs as go
+
 #from mpl_toolkits.mplot3d import Axes3D
 
 def thomas(xyz, *, b):
@@ -34,18 +36,16 @@ def plot_thomas(xyz, *, b):
     # xyzs[0] = [np.random.randn(1)[0], np.random.randn(1)[0], np.random.randn(1)[0]]
 
     for i in range(num_steps):
-        xyzs[i + 1] = xyzs[i] + thomas(xyzs[i]) * dt
+        xyzs[i + 1] = xyzs[i] + thomas(xyzs[i], b=b) * dt
 
-    # Plot
-    ax = plt.figure(figsize=(8, 8)).add_subplot(projection='3d')
+    # Create a scatter trace with x, y, and z data
+    trace = go.Scatter3d(x=xyzs[:, 0], y=xyzs[:, 1], z=xyzs[:, 2], mode='lines')
 
-    ax.plot(*xyzs.T, lw=0.5)
-    ax.set_xlabel("X Axis")
-    ax.set_ylabel("Y Axis")
-    ax.set_zlabel("Z Axis")
-    ax.set_title("Thomas Attractor")
+    # Create a layout object with axes labels and a title
+    layout = go.Layout(scene=dict(xaxis_title='X Axis', yaxis_title='Y Axis', zaxis_title='Z Axis'),
+                       title='Thomas Attractor')
 
-    plt.tight_layout()
-    plt.show()
+    # Create a figure object with the trace and layout
+    fig = go.Figure(data=[trace], layout=layout)
 
-    return
+    return fig
